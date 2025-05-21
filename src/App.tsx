@@ -101,9 +101,8 @@ type InsuranceEntry = {
     const icciStatus = form.icci === 'yes' ? 'With ICCI' : 'Without ICCI';
     const genderKey = form.gender === 'male' ? 'Male' : 'Female';
 
-    const ageGroupKey = ageGroup as keyof typeof insuranceData["Male"]["Non-Smoker"]["With ICCI"];
-    const entry = insuranceData[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroupKey] as InsuranceEntry;
-
+const ageGroupTyped = ageGroup as keyof typeof insuranceData[typeof genderKey][typeof smokerStatus][typeof icciStatus];
+const entry = insuranceData[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroupTyped];
 
     if (entry) {
       if (Array.isArray(entry.data)) {
