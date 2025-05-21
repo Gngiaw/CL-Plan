@@ -101,8 +101,8 @@ type InsuranceEntry = {
     const icciStatus = form.icci === 'yes' ? 'With ICCI' : 'Without ICCI';
     const genderKey = form.gender === 'male' ? 'Male' : 'Female';
 
-const ageGroupTyped = ageGroup as keyof typeof insuranceData[typeof genderKey][typeof smokerStatus][typeof icciStatus];
-const entry = insuranceData[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroupTyped];
+// Hack the typing just enough to work with TS
+const entry = (insuranceData as any)[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroup];
 
     if (entry) {
       if (Array.isArray(entry.data)) {
