@@ -95,17 +95,23 @@ function App() {
     const icciStatus = form.icci === 'yes' ? 'With ICCI' : 'Without ICCI';
     const genderKey = form.gender === 'male' ? 'Male' : 'Female';
 
-    const entry = insuranceData[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroup];
+    const ageGroupKey = ageGroup as keyof typeof insuranceData["Male"]["Non-Smoker"]["With ICCI"];
+    const entry = insuranceData[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroupKey];
+
 
     if (entry) {
       if (Array.isArray(entry.data)) {
         setDataRows(entry.data);
       } else {
-        const converted = Object.entries(entry.data).map(([year, value]) => ({
-          year,
-          fund: value.fund,
-          protection: value.protection,
-        }));
+        const converted = Object.entries(entry.data).map(([year, value]) => {
+          const val = value as { fund: string; protection: string };
+          return {
+             year,
+             fund: val.fund,
+             protection: val.protection,
+       };
+     });
+
         setDataRows(converted);
       }
 
