@@ -102,7 +102,11 @@ type InsuranceEntry = {
     const genderKey = form.gender === 'male' ? 'Male' : 'Female';
 
 // Hack the typing just enough to work with TS
-const entry = (insuranceData as any)[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroup];
+const entry = ((insuranceData as any)[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroup]) as {
+  premium?: string;
+  monthly?: string;
+  data: { year: number; fund: string; protection: string }[] | { [key: string]: { fund: string; protection: string } };
+};
 
     if (entry) {
       if (Array.isArray(entry.data)) {
