@@ -102,24 +102,25 @@ type InsuranceEntry = {
     const genderKey = form.gender === 'male' ? 'Male' : 'Female';
 
 // Hack the typing just enough to work with TS
-const entry = ((insuranceData as any)[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroup]) as {
+const entry = (insuranceData as Record<string, any>)[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroup] as {
   premium?: string;
   monthly?: string;
-  data: { year: number; fund: string; protection: string }[] | { [key: string]: { fund: string; protection: string } };
+  data: { year: number; fund: string; protection: string }[] | Record<string, { fund: string; protection: string }>;
 };
 
-    if (entry) {
-      if (Array.isArray(entry.data)) {
-        setDataRows(entry.data);
-      } else {
-const converted = Object.entries(entry.data).map(([year, value]) => ({
-  year,
-  fund: (value as any).fund,
-  protection: (value as any).protection,
-}));
-        setDataRows(converted);
-      }
-
+if (entry) {
+  if (Array.isArray(entry.data)) {
+    setDataRows(entry.data);
+  } else {
+    const converted = Object.entries(entry.data as Record<string, { fund: string; protection: string }>).map(
+      ([year, value]) => ({
+        year,
+        fund: value.fund,
+        protection: value.protection,
+      })
+    );
+    setDataRows(converted);
+  }
       const premium = entry.premium || entry.monthly || 'N/A';
     
       const coverageEN = `Policy Coverage:
