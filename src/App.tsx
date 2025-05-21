@@ -52,6 +52,12 @@ function App() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+type InsuranceEntry = {
+  premium?: string;
+  monthly?: string;
+  data: { [year: string]: { fund: string; protection: string } };
+};
+
   const handleSubmit = () => {
     const age = parseInt(form.age);
     let ageGroup = '';
@@ -96,22 +102,18 @@ function App() {
     const genderKey = form.gender === 'male' ? 'Male' : 'Female';
 
     const ageGroupKey = ageGroup as keyof typeof insuranceData["Male"]["Non-Smoker"]["With ICCI"];
-    const entry = insuranceData[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroupKey];
+    const entry = insuranceData[genderKey]?.[smokerStatus]?.[icciStatus]?.[ageGroupKey] as InsuranceEntry;
 
 
     if (entry) {
       if (Array.isArray(entry.data)) {
         setDataRows(entry.data);
       } else {
-        const converted = Object.entries(entry.data).map(([year, value]) => {
-          const val = value as { fund: string; protection: string };
-          return {
-             year,
-             fund: val.fund,
-             protection: val.protection,
-       };
-     });
-
+const converted = Object.entries(entry.data).map(([year, value]) => ({
+  year,
+  fund: (value as any).fund,
+  protection: (value as any).protection,
+}));
         setDataRows(converted);
       }
 
